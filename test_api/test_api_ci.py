@@ -23,7 +23,7 @@ def test_get_simple(base_url, session):
     assert data["args"] == {}
     assert data["headers"]["host"] == "postman-echo.com"
 
-def test_get_with_query_params(base_url):
+def test_get_with_query_params(base_ur, session):
     """Тест: GET с query-параметрами"""
     params = {"test_key": "test_value", "number": "123"}
     response = session.get(f"{base_url}/get", params=params)
