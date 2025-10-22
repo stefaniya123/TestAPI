@@ -1,0 +1,57 @@
+import pytest
+import requests
+
+@pytest.fixture(scope="session")
+def base_url():
+    """Фикстура: базовый URL Postman Echo API"""
+    return "https://postman-echo.com"
+
+
+
+def test_get_simple(base_url, session):
+    """Тест: простой GET-запрос без параметров"""
+    response = session.get(f"{base_url}/get")
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data["url"] == f"{base_url}/get"
+    assert data["args"] == {}
+    assert data["headers"]["host"] == "postman-echo.com"
+
+def test_get_with_query_params(base_url, session):
+    """Тест: GET с query-параметрами"""
+    params = {"test_key": "test_value", "number": "123"}
+    response = session.get(f"{base_url}/get", params=params)
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data["args"] == params
+    assert data["args"]["number"] == "123"
+
+def test_post_json(base_url, session):
+    """Тест: POST с JSON-телом"""
+    payload = {"message": "Hello", "flag": True, "count": 100}
+    response = session.post(f"{base_url}/post", json=payload)
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data["json"] == payload
+
+def test_post_form_data(base_url, session):
+    """Тест: POST с form-encoded данными"""
+    form_data = {"username": "pytest_user", "role": "tester"}
+    response = session.post(f"{base_url}/post", data=form_data)
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data["form"] == form_data
+
+def test_custom_header_in_request(base_url, session):
+    """Тест: запрос с кастомным заголовком"""
+    headers = {"X-Test-Client": "pytest-automation"}
+    response = session.post(f"{base_url}/post", json={}, headers=headers)
+    assert response.status_code == 200
+
+    data = response.json()
+    assert "x-test-client" in data["headers"]
+    assert data["headers"]["x-test-client"] == "pytest-automation"
