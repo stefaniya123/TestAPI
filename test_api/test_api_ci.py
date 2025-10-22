@@ -13,7 +13,7 @@ def api_session():
         yield s
 
 
-def test_get_simple(base_url, session):
+def test_get_simple(base_url, api_session):
     """Тест: простой GET-запрос без параметров"""
     response = session.get(f"{base_url}/get")
     assert response.status_code == 200
@@ -23,7 +23,7 @@ def test_get_simple(base_url, session):
     assert data["args"] == {}
     assert data["headers"]["host"] == "postman-echo.com"
 
-def test_get_with_query_params(base_ur, session):
+def test_get_with_query_params(base_ur, api_session):
     """Тест: GET с query-параметрами"""
     params = {"test_key": "test_value", "number": "123"}
     response = session.get(f"{base_url}/get", params=params)
@@ -33,7 +33,7 @@ def test_get_with_query_params(base_ur, session):
     assert data["args"] == params
     assert data["args"]["number"] == "123"
 
-def test_post_json(base_url, session):
+def test_post_json(base_url, api_session):
     """Тест: POST с JSON-телом"""
     payload = {"message": "Hello", "flag": True, "count": 100}
     response = session.post(f"{base_url}/post", json=payload)
@@ -42,7 +42,7 @@ def test_post_json(base_url, session):
     data = response.json()
     assert data["json"] == payload
 
-def test_post_form_data(base_url, session):
+def test_post_form_data(base_url, api_session):
     """Тест: POST с form-encoded данными"""
     form_data = {"username": "pytest_user", "role": "tester"}
     response = session.post(f"{base_url}/post", data=form_data)
@@ -51,7 +51,7 @@ def test_post_form_data(base_url, session):
     data = response.json()
     assert data["form"] == form_data
 
-def test_custom_header_in_request(base_url, session):
+def test_custom_header_in_request(base_url,api_session):
     """Тест: запрос с кастомным заголовком"""
     headers = {"X-Test-Client": "pytest-automation"}
     response = session.post(f"{base_url}/post", json={}, headers=headers)
