@@ -6,6 +6,11 @@ def base_url():
     """Фикстура: базовый URL Postman Echo API"""
     return "https://postman-echo.com"
 
+@pytest.fixture(scope="function")
+def api_session():
+    """Фикстура: сессия requests для каждого теста"""
+    with requests.Session() as s:
+        yield s
 
 
 def test_get_simple(base_url, session):
@@ -18,7 +23,7 @@ def test_get_simple(base_url, session):
     assert data["args"] == {}
     assert data["headers"]["host"] == "postman-echo.com"
 
-def test_get_with_query_params(base_url, session):
+def test_get_with_query_params(base_url):
     """Тест: GET с query-параметрами"""
     params = {"test_key": "test_value", "number": "123"}
     response = session.get(f"{base_url}/get", params=params)
